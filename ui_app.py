@@ -51,111 +51,111 @@ POOL_MIN = 15
 ################################################################################
 #                              Scoring Function                                #
 ################################################################################
-def match_dreamscore(df:pd.DataFrame):
-  scores = defaultdict(int)
-  runs = defaultdict(int)
-  balls_faced = defaultdict(int)
-  conceded = defaultdict(int)
-  legal_balls = defaultdict(int)
-  wickets = defaultdict(int)
-  catches = defaultdict(int)
-  out = set()
+def match_dreamscore(df: pd.DataFrame):
+    scores = defaultdict(int)
+    runs = defaultdict(int)
+    balls_faced = defaultdict(int)
+    conceded = defaultdict(int)
+    legal_balls = defaultdict(int)
+    wickets = defaultdict(int)
+    catches = defaultdict(int)
+    out = set()
 
-  for row in df.itertuples(index=False):
-    # Striker score
-    runs[row.striker] += row.runs_of_bat
-    scores[row.striker] += row.runs_of_bat
-    if row.runs_of_bat == 4:
-      scores[row.striker] += 1
-    elif row.runs_of_bat == 6:
-      scores[row.striker] += 2
-    if not row.wide:
-      balls_faced[row.striker] += 1
+    for row in df.itertuples(index=False):
+        # Striker score
+        runs[row.striker] += row.runs_of_bat
+        scores[row.striker] += row.runs_of_bat
+        if row.runs_of_bat == 4:
+            scores[row.striker] += 1
+        elif row.runs_of_bat == 6:
+            scores[row.striker] += 2
+        if not row.wide:
+            balls_faced[row.striker] += 1
 
-    # Bowler score
-    conceded[row.bowler] += row.runs_of_bat + row.wide + row.noballs
-    if not row.wide and not row.noballs:
-      legal_balls[row.bowler] += 1
+        # Bowler score
+        conceded[row.bowler] += row.runs_of_bat + row.wide + row.noballs
+        if not row.wide and not row.noballs:
+            legal_balls[row.bowler] += 1
 
-    # Wickets
-    if isinstance(row.wicket_type, str):
-      wt = row.wicket_type.lower()
-      if wt in {'caught', 'bowled', 'lbw', 'stumped', 'hit wicket'}:
-        wickets[row.bowler] += 1
-        scores[row.bowler] += 25
-        if wt in {'bowled', 'lbw'}:
-          scores[row.bowler] += 8
-      if wt == 'caught' and isinstance(row.fielder, str):
-        for f in row.fielder.split('/'):
-          catches[f.strip()] += 1
-          scores[f.strip()] += 8
-      if isinstance(row.player_dismissed, str):
-        out.add(row.player_dismissed)
+        # Wickets
+        if isinstance(row.wicket_type, str):
+            wt = row.wicket_type.lower()
+            if wt in {'caught', 'bowled', 'lbw', 'stumped', 'hit wicket'}:
+                wickets[row.bowler] += 1
+                scores[row.bowler] += 25
+                if wt in {'bowled', 'lbw'}:
+                    scores[row.bowler] += 8
+            if wt == 'caught' and isinstance(row.fielder, str):
+                for f in row.fielder.split('/'):
+                    catches[f.strip()] += 1
+                    scores[f.strip()] += 8
+            if isinstance(row.player_dismissed, str):
+                out.add(row.player_dismissed)
 
-  # Milestones, ducks, strike rate
-  for p, r in runs.items():
-    if r >= 100:
-      scores[p] += 16
-    elif r >= 50:
-      scores[p] += 8
-    elif r >= 30:
-      scores[p] += 4
-    if r == 0 and p in out and balls_faced[p] > 0:
-      scores[p] -= 2
+    # Milestones, ducks, strike rate
+    for p, r in runs.items():
+        if r >= 100:
+            scores[p] += 16
+        elif r >= 50:
+            scores[p] += 8
+        elif r >= 30:
+            scores[p] += 4
+        if r == 0 and p in out and balls_faced[p] > 0:
+            scores[p] -= 2
 
-    bf = balls_faced[p]
-    if bf >= 10:
-      sr = 100 * r / bf
-      if sr > 170:
-        scores[p] += 6
-      elif sr > 150:
-        scores[p] += 4
-      elif sr >= 130:
-        scores[p] += 2
-      elif sr < 50:
-        scores[p] -= 6
-      elif sr < 60:
-        scores[p] -= 4
-      elif sr <= 70:
-        scores[p] -= 2
+        bf = balls_faced[p]
+        if bf >= 10:
+            sr = 100 * r / bf
+            if sr > 170:
+                scores[p] += 6
+            elif sr > 150:
+                scores[p] += 4
+            elif sr >= 130:
+                scores[p] += 2
+            elif sr < 50:
+                scores[p] -= 6
+            elif sr < 60:
+                scores[p] -= 4
+            elif sr <= 70:
+                scores[p] -= 2
 
-  # Wicket hauls and economy
-  for p, lb in legal_balls.items():
-    w = wickets[p]
-    if w >= 5:
-      scores[p] += 16
-    elif w == 4:
-      scores[p] += 8
-    elif w == 3:
-      scores[p] += 4
+    # Wicket hauls and economy
+    for p, lb in legal_balls.items():
+        w = wickets[p]
+        if w >= 5:
+            scores[p] += 16
+        elif w == 4:
+            scores[p] += 8
+        elif w == 3:
+            scores[p] += 4
 
-    if lb >= 12:
-      econ = conceded[p] / (lb / 6)
-      if econ < 5:
-        scores[p] += 6
-      elif econ < 6:
-        scores[p] += 4
-      elif econ <= 7:
-        scores[p] += 2
-      elif econ > 12:
-        scores[p] -= 6
-      elif econ > 11:
-        scores[p] -= 4
-      elif econ >= 10:
-        scores[p] -= 2
+        if lb >= 12:
+            econ = conceded[p] / (lb / 6)
+            if econ < 5:
+                scores[p] += 6
+            elif econ < 6:
+                scores[p] += 4
+            elif econ <= 7:
+                scores[p] += 2
+            elif econ > 12:
+                scores[p] -= 6
+            elif econ > 11:
+                scores[p] -= 4
+            elif econ >= 10:
+                scores[p] -= 2
 
-  # Catch bonus
-  for p, c in catches.items():
-    if c >= 3:
-      scores[p] += 4
+    # Catch bonus
+    for p, c in catches.items():
+        if c >= 3:
+            scores[p] += 4
 
-  return dict(scores)
+    return dict(scores)
 
 
 ################################################################################
 #                              Data Loaders                                    #
 ################################################################################
-@st.cache_resource
+@st.cache_data
 def load_deliveries():
     frames = []
     for y in SEASONS:
@@ -170,11 +170,9 @@ def load_deliveries():
     X_train = data[data['date'].dt.year <= 2025]
     matches = find_similar_names(X_train)
 
-    del matches['Mandeep']
-    del matches['Hazlewood']
-    del matches['Roy']
-    del matches['Mitchell']
-    del matches['Mitchell Marsh']
+    for k in ['Mandeep', 'Hazlewood', 'Roy', 'Mitchell', 'Mitchell Marsh']:
+        matches.pop(k, None)
+
     matches['Mayank'] = ['Mayank Agarawal']
     matches['Rahul'] = ['Rahul Tewatia']
 
@@ -271,9 +269,6 @@ def align_cricsheet_names(df_cricsheet, df_original, threshold=90):
         else:
             name_mapping[name] = name
 
-    # name_mapping['K Yadav'] = 'Kuldeep Yadav'
-    # name_mapping['RA Jadeja'] = 'Ravindra Jadeja'
-
     df_mapped = df_cricsheet.copy()
 
     def replace_names(players):
@@ -305,13 +300,14 @@ def update_roles_dictionary(roles_dict, name_mapping_dict, threshold=90):
 @st.cache_resource
 def load_model(path):
     with open(path, 'rb') as f:
+        print("Loading:", path)
         return pickle.load(f)
 
 
 ################################################################################
 #                          Historical Cache & Features                         #
 ################################################################################
-@st.cache_resource
+@st.cache_data
 def build_historical_cache(df):
     df = df.copy()
     df['date'] = pd.to_datetime(df['date'])
@@ -443,7 +439,6 @@ def select_optimal_xi(players_data):
 
     A_ub, b_ub = [], []
 
-    # Role constraints: 1 to 8 per role
     for r in ['BAT', 'BOWL', 'WK', 'AR']:
         r_indices = [i for i, p in enumerate(players_data) if p['role'] == r]
         if r_indices:
@@ -459,7 +454,6 @@ def select_optimal_xi(players_data):
             A_ub.append(row_min)
             b_ub.append(-1)
 
-    # Team constraint: At least 1 player per team
     teams = list(set(p['team'] for p in players_data))
     for t in teams:
         t_indices = [i for i, p in enumerate(players_data) if p['team'] == t]
@@ -470,7 +464,6 @@ def select_optimal_xi(players_data):
             A_ub.append(row_team)
             b_ub.append(-1)
 
-    # XI players constraint
     A_eq = [[1] * N]
     b_eq = [XI]
 
@@ -513,6 +506,7 @@ def find_similar_names(df, threshold=90):
         if close_matches:
             matches[name] = close_matches
     return matches
+
 
 def get_squad_pool(df, team, match_date):
     match_date = pd.to_datetime(match_date)
@@ -680,14 +674,6 @@ def evaluate_2026_season(df_deliveries, df_cricsheet_mapped, model, roles, c=20.
 ################################################################################
 #                         Model Retraining Pipeline                            #
 ################################################################################
-from collections import defaultdict
-import math
-import pickle
-import numpy as np
-import pandas as pd
-from sklearn.linear_model import LinearRegression
-import streamlit as st
-
 def compute_match_p2p_scores(m_df):
     """Calculates direct player-vs-player Dream11 interaction points for a single match."""
     p2p = defaultdict(float)
@@ -695,19 +681,16 @@ def compute_match_p2p_scores(m_df):
         striker = row.striker
         bowler = row.bowler
         
-        # Batting runs and boundary bonuses against bowler
         r = row.runs_of_bat
         pts_bat = r + (1 if r == 4 else (2 if r == 6 else 0))
         p2p[(striker, bowler)] += pts_bat
         
-        # Bowling wickets and dismissal bonuses against striker
         if isinstance(row.wicket_type, str):
             wt = row.wicket_type.lower()
             if wt in {'caught', 'bowled', 'lbw', 'stumped', 'hit wicket'}:
                 pts_bowl = 25 + (8 if wt in {'bowled', 'lbw'} else 0)
                 p2p[(bowler, striker)] += pts_bowl
             
-            # Catching points against dismissed batsman
             if wt == 'caught' and isinstance(row.fielder, str):
                 dismissed = row.player_dismissed if isinstance(row.player_dismissed, str) else striker
                 for f in row.fielder.split('/'):
@@ -744,14 +727,12 @@ def _compute_f2_fast(player_name, player_team, current_date, teams_long, match_s
 
 def _update_accumulators(m_df, m_scores, venue_player_pts, p2p_cum_pts, team_h2h_cum_pts):
     """Updates running stats after feature extraction for the current match date."""
-    # 1. Update Venue points
     if 'venue' in m_df.columns and not m_df['venue'].empty:
         venue = m_df['venue'].iloc[0]
         if pd.notna(venue):
             for player, score in m_scores.items():
                 venue_player_pts[venue][player].append(score)
                 
-    # 2. Update Team H2H points
     teams = list(set(m_df['batting_team'].dropna().tolist() + m_df['bowling_team'].dropna().tolist()))
     if len(teams) >= 2:
         t1, t2 = teams[0], teams[1]
@@ -768,24 +749,25 @@ def _update_accumulators(m_df, m_scores, venue_player_pts, p2p_cum_pts, team_h2h
             elif p in t2_roster:
                 team_h2h_cum_pts[h2h_key][t2] += score
 
-    # 3. Update Player vs Player confrontation points
     match_p2p = compute_match_p2p_scores(m_df)
     for pair, pts in match_p2p.items():
         p2p_cum_pts[pair] += pts
 
 
-def retrain_model_pipeline(df_deliveries, model_label="Dream11_Team_Regressor"):
-    """Single-pass fast model retraining pipeline using chronological accumulators."""
+def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, model_label="Dream11_Team_Regressor"):
+    """Single-pass fast model retraining pipeline using chronological accumulators with date windowing."""
     df = df_deliveries.copy()
     df['date'] = pd.to_datetime(df['date'])
+
+    train_start_dt = pd.Timestamp(train_start) if train_start else None
+    train_end_dt = pd.Timestamp(train_end) if train_end else None
     
-    # Precompute match scores and schedule lookups once
+    # Precompute match scores and schedule lookups across full history
     match_scores_lookup, venue_dates_lookup, teams_long = build_historical_cache(df)
     
     unique_dates = sorted(df['date'].unique())
     matches_by_date = {d: m_df for d, m_df in df.groupby('date')}
     
-    # In-memory chronological state accumulators
     venue_player_pts = defaultdict(lambda: defaultdict(list))
     p2p_cum_pts = defaultdict(float)
     team_h2h_cum_pts = defaultdict(lambda: defaultdict(float))
@@ -813,49 +795,60 @@ def retrain_model_pipeline(df_deliveries, model_label="Dream11_Team_Regressor"):
             _update_accumulators(m_df, m_scores, venue_player_pts, p2p_cum_pts, team_h2h_cum_pts)
             continue
             
-        t1, t2 = teams[0], teams[1]
-        h2h_key = tuple(sorted([t1, t2]))
-        
-        # --- 1. Compute Feature 4 (Team vs Team H2H) via O(1) Accumulator ---
-        t1_pts = team_h2h_cum_pts[h2h_key][t1]
-        t2_pts = team_h2h_cum_pts[h2h_key][t2]
-        f4_t1 = math.log((t1_pts + (25 * c_val)) / (t2_pts + (25 * c_val)))
-        
-        for p in players:
-            p_bat = m_df[m_df['striker'] == p]['batting_team']
-            p_team = p_bat.iloc[0] if not p_bat.empty else t1
-            opp_team = t2 if p_team == t1 else t1
-            opp_players = [op for op in players if op != p]
-            f4 = f4_t1 if p_team == t1 else -f4_t1
+        # Check if match date is within selected training range
+        in_range = True
+        if train_start_dt and m_date < train_start_dt:
+            in_range = False
+        if train_end_dt and m_date > train_end_dt:
+            in_range = False
+
+        if in_range:
+            t1, t2 = teams[0], teams[1]
+            h2h_key = tuple(sorted([t1, t2]))
             
-            # --- 2. Compute Feature 1 (Venue Avg) via O(1) Accumulator ---
-            v_home = HOME_GROUND.get(p_team)
-            v_away = HOME_GROUND.get(opp_team)
-            home_list = venue_player_pts[v_home][p] if v_home else []
-            away_list = venue_player_pts[v_away][p] if v_away else []
+            # Feature 4 (Team H2H)
+            t1_pts = team_h2h_cum_pts[h2h_key][t1]
+            t2_pts = team_h2h_cum_pts[h2h_key][t2]
+            f4_t1 = math.log((t1_pts + (25 * c_val)) / (t2_pts + (25 * c_val)))
             
-            avg_home = sum(home_list) / len(home_list) if home_list else 0.0
-            avg_away = sum(away_list) / len(away_list) if away_list else 0.0
-            f1 = (avg_home + avg_away) / 2.0
+            for p in players:
+                p_bat = m_df[m_df['striker'] == p]['batting_team']
+                p_team = p_bat.iloc[0] if not p_bat.empty else t1
+                opp_team = t2 if p_team == t1 else t1
+                opp_players = [op for op in players if op != p]
+                f4 = f4_t1 if p_team == t1 else -f4_t1
+                
+                # Feature 1 (Venue Avg)
+                v_home = HOME_GROUND.get(p_team)
+                v_away = HOME_GROUND.get(opp_team)
+                home_list = venue_player_pts[v_home][p] if v_home else []
+                away_list = venue_player_pts[v_away][p] if v_away else []
+                
+                avg_home = sum(home_list) / len(home_list) if home_list else 0.0
+                avg_away = sum(away_list) / len(away_list) if away_list else 0.0
+                f1 = (avg_home + avg_away) / 2.0
+                
+                # Feature 2 (Season Moving Avg)
+                f2 = _compute_f2_fast(p, p_team, m_date, teams_long, match_scores_lookup)
+                
+                # Feature 3 (Player H2H)
+                p_vs_opp = sum(p2p_cum_pts[(p, opp)] for opp in opp_players)
+                opp_vs_p = sum(p2p_cum_pts[(opp, p)] for opp in opp_players)
+                f3 = math.log((p_vs_opp + c_val) / (opp_vs_p + c_val))
+                
+                X_list.append([f1, f2, f3, f4])
+                y_list.append(m_scores[p])
             
-            # --- 3. Compute Feature 2 (Season Moving Avg) ---
-            f2 = _compute_f2_fast(p, p_team, m_date, teams_long, match_scores_lookup)
-            
-            # --- 4. Compute Feature 3 (Player H2H) via O(1) Accumulator ---
-            p_vs_opp = sum(p2p_cum_pts[(p, opp)] for opp in opp_players)
-            opp_vs_p = sum(p2p_cum_pts[(opp, p)] for opp in opp_players)
-            f3 = math.log((p_vs_opp + c_val) / (opp_vs_p + c_val))
-            
-            X_list.append([f1, f2, f3, f4])
-            y_list.append(m_scores[p])
-            
-        # Update running state with results from current match for future match dates
+        # Update running state for all dates chronologically
         _update_accumulators(m_df, m_scores, venue_player_pts, p2p_cum_pts, team_h2h_cum_pts)
 
-    status_text.text("Fitting Linear Regression model...")
+    if not X_list:
+        st.error(f"No match samples found between {train_start} and {train_end}.")
+        return None, None
+
+    status_text.text(f"Fitting Linear Regression model on {len(X_list)} samples...")
     model = LinearRegression()
-    if X_list and y_list:
-        model.fit(X_list, y_list)
+    model.fit(X_list, y_list)
 
     clean_label = model_label.strip().replace(" ", "_")
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -881,11 +874,9 @@ def current_model():
 with st.sidebar:
     st.header("Configuration")
     
-    # Track model path in session state separately from the text widget
     if 'active_model_path' not in st.session_state:
         st.session_state['active_model_path'] = str(MODEL_PATH)
 
-    # Sync state if user manually types into the input box
     def sync_manual_input():
         st.session_state['active_model_path'] = st.session_state['model_path_widget']
 
@@ -961,7 +952,7 @@ with product_tab:
 
 
 with model_ui_tab:
-    active_path = st.session_state.get('model_path', str(MODEL_PATH))
+    active_path = st.session_state.get('active_model_path', str(MODEL_PATH))
     st.info(f"**Currently Active Model for Evaluation & Inference:** `{active_path}`")
 
     st.subheader("Model Retraining")
@@ -969,7 +960,6 @@ with model_ui_tab:
 
     model_label_input = st.text_input("Model Output Label", value="Dream11_Team_Regressor")
 
-    # Date range selection for model training
     c1, c2 = st.columns(2)
     train_start = c1.date_input("Train From Date", value=date(2022, 1, 1))
     train_end = c2.date_input("Train To Date", value=date(2025, 12, 31))
@@ -980,20 +970,17 @@ with model_ui_tab:
             st.error("Delivery datasets not found in `./Datasets/IPL DELIVERIES/`.")
             st.stop()
 
-        # Filter deliveries dataset by selected training date window
-        deliveries_df['date'] = pd.to_datetime(deliveries_df['date'])
-        mask = (deliveries_df['date'] >= pd.Timestamp(train_start)) & (deliveries_df['date'] <= pd.Timestamp(train_end))
-        filtered_df = deliveries_df[mask]
-
-        if filtered_df.empty:
-            st.error(f"No delivery data found between {train_start} and {train_end}.")
-            st.stop()
-
         with st.spinner("Executing feature extraction and model fitting..."):
-            save_path, model = retrain_model_pipeline(filtered_df, model_label=model_label_input)
-            st.session_state["active_model_path"] = str(save_path)  # <--- Updated key name
-            st.success(f"Model retrained and saved to `{save_path}`. Active model path updated!")
-            st.rerun()
+            save_path, model = retrain_model_pipeline(
+                df_deliveries=deliveries_df,
+                train_start=train_start,
+                train_end=train_end,
+                model_label=model_label_input
+            )
+            if save_path:
+                st.session_state["active_model_path"] = str(save_path)
+                st.success(f"Model retrained and saved to `{save_path}`. Active model path updated!")
+                st.rerun()
 
     st.divider()
     st.write("### Select Active Model")
@@ -1002,7 +989,7 @@ with model_ui_tab:
         if model_files:
             selected_file = st.selectbox("Select model file to set as active:", model_files)
             if st.button("Set Active Model"):
-                st.session_state["active_model_path"] = str(MODELS_DIR / selected_file)  # <--- Updated key name
+                st.session_state["active_model_path"] = str(MODELS_DIR / selected_file)
                 st.success(f"Active model updated to: `{MODELS_DIR / selected_file}`")
                 st.rerun()
         else:
