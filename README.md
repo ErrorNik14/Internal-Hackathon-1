@@ -66,8 +66,9 @@ streamlit run ui_app.py
 Streamlit will print a local URL (typically `http://localhost:8501`) and should
 open it automatically in your browser. If not, open that URL manually.
 
-   - Number of matches evaluated
-5. Results are saved automatically to `results/predictions_<start>_<end>.csv` and
+## 4. Attached is a [video demonstration](https://drive.google.com/file/d/1BRxbq6g2wveByl-g4m-C7OL7QKhCGevQ/view?usp=sharing) of the Model UI Pipeline
+
+## 5. Results are saved automatically to `results/predictions_<start>_<end>.csv` and
    can also be downloaded via the **Download Evaluation CSV** button.
 
 
