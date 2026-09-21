@@ -1,0 +1,359 @@
+name,pct_faced,pct_bowled,is_wk,role
+Williams,5,94,0,BOWL
+Anshul Kamboj,6,93,0,BOWL
+Hooda,91,8,0,BAT
+Rashid Khan,12,87,0,BOWL
+Saurav Chauhan,100,0,0,BAT
+Starc,4,95,0,BOWL
+J Suchith,6,93,0,BOWL
+Kusal Mendis,100,0,0,BAT
+Sai Kishore,3,96,0,BOWL
+Milne,0,100,0,BOWL
+Shepherd,29,70,0,AR
+Swapnil Singh,19,80,0,BOWL
+Nehal Wadhera,96,3,0,BAT
+Bartlett,20,80,0,BOWL
+Litton Das,100,0,0,BAT
+Shaik Rasheed,100,0,0,BAT
+Wade,100,0,1,WK
+Akash Deep,4,95,0,BOWL
+Jansen,0,100,0,BOWL
+Nandre Burger,0,100,0,BOWL
+Kartikeya,5,94,0,BOWL
+Fraser-McGurk,100,0,0,BAT
+Kuldeep Yadav,12,87,0,BOWL
+Ravindra,95,4,0,BAT
+Ashwin,19,80,0,BOWL
+Arshad Khan,24,75,0,BOWL
+M Bracewell,41,58,0,AR
+Sediqullah Atal,100,0,0,BAT
+Noor Ahmad,4,95,0,BOWL
+Boult,4,95,0,BOWL
+Robin Minz,100,0,0,BAT
+Chetan Sakariya,0,100,0,BOWL
+Tye,0,100,0,BOWL
+du Plessis,100,0,0,BAT
+Sumit Kumar,54,45,0,AR
+Vivrant Sharma,72,27,0,AR
+Rajapaksa,100,0,0,BAT
+Mayers,85,14,0,BAT
+Shai Hope,100,0,0,BAT
+Jayant Yadav,0,100,0,BOWL
+Riyan Parag,83,16,0,BAT
+Shivam Singh,100,0,0,BAT
+Adil Rashid,27,72,0,AR
+Matt Henry,0,100,0,BOWL
+Pooran,100,0,1,WK
+Gowtham,16,83,0,BOWL
+Naman Dhir,80,19,0,BAT
+Dhoni,100,0,1,WK
+Ripal Patel,100,0,0,BAT
+Ferreira,100,0,0,BAT
+Ramandeep Singh,77,22,0,BAT
+S Kaul,0,100,0,BOWL
+Narine,28,71,0,AR
+Ishan Kishan,99,0,1,WK
+Dwayne Bravo,10,89,0,BOWL
+Raj Bawa,100,0,0,BAT
+Harsh Dubey,0,100,0,BOWL
+Harshit Rana,7,92,0,BOWL
+Rossouw,100,0,0,BAT
+Jackson,100,0,1,WK
+Sandeep,0,100,0,BOWL
+Varun Chakaravarthy,0,99,0,BOWL
+Ishant,1,98,0,BOWL
+Nitish Reddy,72,27,0,AR
+Shivam Dube,96,3,0,BAT
+Ashutosh Sharma,100,0,0,BAT
+Mayank,100,0,0,BAT
+Hrithik Shokeen,24,75,0,BOWL
+Dhruv Jurel,100,0,0,BAT
+Neesham,60,40,0,AR
+Arjun Tendulkar,10,89,0,BOWL
+Sandeep Sharma,1,98,0,BOWL
+Hasaranga,10,89,0,BOWL
+Jofra Archer,12,87,0,BOWL
+Kedar Jadhav,100,0,0,BAT
+K Nagarkoti,0,100,0,BOWL
+Anmolpreet Singh,100,0,0,BAT
+Musheer Khan,20,80,0,BOWL
+Khaleel Ahmed,0,99,0,BOWL
+Mitchell Marsh,74,25,0,AR
+Spencer Johnson,6,93,0,BOWL
+Kohli,100,0,0,BAT
+Akash Madhwal,4,95,0,BOWL
+Stokes,70,30,0,AR
+Meredith,1,98,0,BOWL
+Chawla,6,93,0,BOWL
+Fazalhaq Farooqi,5,94,0,BOWL
+Pant,100,0,1,WK
+Sanvir Singh,100,0,0,BAT
+Kaverappa,0,100,0,BOWL
+Ayush Mhatre,100,0,0,BAT
+Himanshu Sharma,0,100,0,BOWL
+Daniel Sams,12,87,0,BOWL
+Manish Pandey,100,0,0,BAT
+Buttler,100,0,1,WK
+Tymal Mills,2,97,0,BOWL
+Rabada,8,91,0,BOWL
+Anukul Roy,14,85,0,BOWL
+Karun Nair,100,0,0,BAT
+Jordan,6,93,0,BOWL
+Gulbadin,71,28,0,AR
+Vipraj Nigam,25,74,0,BOWL
+Philip Salt,100,0,0,BAT
+Krunal Pandya,34,65,0,AR
+Tilak Varma,97,2,0,BAT
+Eshan Malinga,0,100,0,BOWL
+V Viyaskanth,7,92,0,BOWL
+Prerak Mankad,100,0,0,BAT
+Glenn Phillips,55,45,0,AR
+Basil Thampi,0,100,0,BOWL
+Zeeshan Ansari,0,100,0,BOWL
+Sai Sudharsan,100,0,0,BAT
+Madhav Tiwari,40,60,0,AR
+de Kock,100,0,1,WK
+Urvil Patel,100,0,0,BAT
+Sakariya,8,91,0,BOWL
+Lomror,88,11,0,BAT
+Uthappa,100,0,0,BAT
+Mayank Agarawal,100,0,0,BAT
+Akeal Hosein,29,70,0,AR
+Shamar Joseph,0,100,0,BOWL
+Kartik Tyagi,5,94,0,BOWL
+Sangwan,8,91,0,BOWL
+Marco Jansen,15,84,0,BOWL
+Bhui,100,0,0,BAT
+Maxwell,56,43,0,AR
+Shankar,97,2,0,BAT
+Simarjeet Singh,5,94,0,BOWL
+Navdeep Saini,2,97,0,BOWL
+Vignesh Puthur,0,100,0,BOWL
+Akash Maharaj Singh,0,100,0,BOWL
+Kuldip Yadav,0,100,0,BOWL
+Ravi Bishnoi,3,96,0,BOWL
+Mohit Sharma,2,97,0,BOWL
+Livingstone,63,36,0,AR
+Stoinis,71,28,0,AR
+Shami,1,98,0,BOWL
+Aman Hakim Khan,94,5,0,BAT
+Azmatullah,20,79,0,BOWL
+Samson,100,0,1,WK
+Sharath BR,100,0,0,BAT
+Jamieson,5,94,0,BOWL
+Nortje,7,92,0,BOWL
+Rohit,100,0,0,BAT
+Mark Wood,4,95,0,BOWL
+Arshdeep Singh,3,96,0,BOWL
+J Richardson,7,92,0,BOWL
+Warrier,0,100,0,BOWL
+Atharva Taide,99,0,0,BAT
+Akash Singh,0,100,0,BOWL
+Rasikh Salam,14,85,0,BOWL
+M Theekshana,3,96,0,BOWL
+Turner,100,0,0,BAT
+Gaikwad,100,0,0,BAT
+RS Hangargekar,0,100,0,BOWL
+N Jagadeesan,100,0,0,BAT
+Rahul Chahar,10,89,0,BOWL
+Vaibhav Suryavanshi,100,0,0,BAT
+Rahul Tewatia,88,11,0,BAT
+Darshan Nalkande,12,87,0,BOWL
+Yash Dhull,100,0,0,BAT
+Yudhvir Singh,10,89,0,BOWL
+Vishnu Vinod,100,0,0,BAT
+Magala,0,100,0,BOWL
+Gurnoor Brar,0,100,0,BOWL
+Harry Brook,100,0,0,BAT
+Mukesh Choudhary,1,98,0,BOWL
+Wiese,37,62,0,AR
+Green,50,49,0,AR
+Shivam Mavi,5,94,0,BOWL
+Shahbaz Ahmed,45,54,0,AR
+Fabian Allen,22,77,0,BOWL
+Mustafizur,1,98,0,BOWL
+Murugan Ashwin,6,93,0,BOWL
+Prabhudessai,100,0,0,BAT
+Wood,7,92,0,BOWL
+Karn Sharma,5,94,0,BOWL
+Ferguson,1,98,0,BOWL
+Priyansh Arya,100,0,0,BAT
+Mohsin Khan,3,96,0,BOWL
+Rutherford,100,0,0,BAT
+Kumar Kartikeya,6,93,0,BOWL
+Rickelton,100,0,1,WK
+Digvesh Rathi,0,99,0,BOWL
+Kwena Maphaka,2,97,0,BOWL
+Maharaj,5,94,0,BOWL
+Shashank Singh,94,5,0,BAT
+Sanjay Yadav,14,85,0,BOWL
+Nabi,29,70,0,AR
+Prithvi Shaw,100,0,0,BAT
+Rishi Dhawan,23,76,0,BOWL
+Naveen-ul-Haq,5,94,0,BOWL
+Kushagra,100,0,0,BAT
+Breetzke,100,0,0,BAT
+Pretorius,15,84,0,BOWL
+Anuj Rawat,100,0,0,BAT
+KM Asif,2,97,0,BOWL
+Santner,14,85,0,BOWL
+Unadkat,12,87,0,BOWL
+Gerald Coetzee,10,89,0,BOWL
+Obed McCoy,3,96,0,BOWL
+Mayank Dagar,0,99,0,BOWL
+Washington Sundar,36,63,0,AR
+Root,55,44,0,AR
+Dhawan,100,0,0,BAT
+Raza,61,38,0,AR
+Mohit Rathee,14,85,0,BOWL
+Odean Smith,32,67,0,AR
+Angkrish Raghuvanshi,100,0,0,BAT
+Willey,28,71,0,AR
+Brevis,99,1,0,BAT
+T Natarajan,0,100,0,BOWL
+Jitesh Sharma,100,0,1,WK
+Indrajith,100,0,0,BAT
+Khejroliya,0,100,0,BOWL
+Ayush Badoni,95,4,0,BAT
+Pathirana,0,100,0,BOWL
+Karan Sharma,100,0,0,BAT
+Priyam Garg,100,0,0,BAT
+Holder,11,88,0,BOWL
+Hardik Pandya,54,45,0,AR
+Arshin Kulkarni,100,0,0,BAT
+Suyash Sharma,0,100,0,BOWL
+Matheesha Pathirana,0,100,0,BOWL
+Bhuvneshwar,9,90,0,BOWL
+Rayudu,100,0,0,BAT
+Short,79,20,0,BAT
+Bairstow,100,0,0,BAT
+Raghav Goyal,0,100,0,BOWL
+Karthik,100,0,1,WK
+Rinku Singh,100,0,0,BAT
+Karim Janat,0,100,0,BOWL
+Tushar Deshpande,1,98,0,BOWL
+Abdul Samad,97,2,0,BAT
+Shahrukh Khan,95,4,0,BAT
+Livingstone 1 run,100,0,0,BAT
+Shubman Gill,100,0,0,BAT
+Will Jacks,68,31,0,AR
+Thakur,18,81,0,BOWL
+W Saha,100,0,1,WK
+Seifert,100,0,0,BAT
+Shanaka,100,0,0,BAT
+Klaasen,100,0,1,WK
+Abhinav Manohar,100,0,0,BAT
+Gurbaz,100,0,0,BAT
+Roy,100,0,0,BAT
+Chakaravarthy,3,96,0,BOWL
+Harpreet Singh,100,0,0,BAT
+Mishra,19,80,0,BOWL
+Shubham Dubey,100,0,0,BAT
+Chahal,0,99,0,BOWL
+Coulter-Nile,10,90,0,BOWL
+Conway,100,0,0,BAT
+Miller,100,0,0,BAT
+Saha,100,0,1,WK
+Chameera,9,90,0,BOWL
+Ngidi,4,96,0,BOWL
+Hetmyer,100,0,0,BAT
+Ashwani Kumar,0,100,0,BOWL
+Head,98,1,0,BAT
+Nitish Rana,90,9,0,BAT
+Kamindu Mendis,62,37,0,AR
+William ORourke,0,100,0,BOWL
+Vaibhav Arora,3,96,0,BOWL
+Rahul,100,0,1,WK
+Lalit Yadav,51,48,0,AR
+Theekshana,3,96,0,BOWL
+N Thushara,0,100,0,BOWL
+van der Dussen,100,0,0,BAT
+Umran Malik,3,96,0,BOWL
+Lewis,100,0,0,BAT
+Hazlewood,4,95,0,BOWL
+Shams Mulani,3,96,0,BOWL
+Avesh Khan,2,97,0,BOWL
+Mulder,64,35,0,AR
+Corbin Bosch,43,56,0,AR
+Warner,100,0,0,BAT
+Kuldeep Sen,1,98,0,BOWL
+Finch,100,0,0,BAT
+Rahane,100,0,0,BAT
+Yash Thakur,0,100,0,BOWL
+Vohra,100,0,0,BAT
+Abhishek Sharma,82,17,0,BAT
+Josh Inglis,100,0,1,WK
+Powell,93,6,0,BAT
+Behrendorff,3,96,0,BOWL
+Alzarri Joseph,4,95,0,BOWL
+Mitchell Owen,100,0,0,BAT
+Shreyas Iyer,99,0,0,BAT
+Russell,51,48,0,AR
+Mitchell,86,13,0,BAT
+Harpreet Brar,18,81,0,BOWL
+Praveen Dubey,40,60,0,AR
+Jacob Bethell,100,0,0,BAT
+Jaiswal,99,0,0,BAT
+Abbott,17,82,0,BOWL
+Prabhsimran,100,0,1,WK
+Abdul Basith,100,0,0,BAT
+Sam Curran,46,53,0,AR
+Mayank Yadav,0,100,0,BOWL
+Sarfaraz Khan,100,0,0,BAT
+Axar,40,59,0,AR
+Suryansh Shedge,37,62,0,AR
+Stubbs,94,5,1,WK
+Umesh Yadav,12,87,0,BOWL
+Satyanarayana Raju,4,96,0,BOWL
+Phil Salt,100,0,0,BAT
+Prince Yadav,6,93,0,BOWL
+Chahar,4,95,0,BOWL
+Pollard,61,38,0,AR
+Jamie Overton,16,83,0,BOWL
+Abhijeet Tomar,100,0,0,BAT
+Prasidh,1,98,0,BOWL
+Aaron,0,100,0,BOWL
+Jadeja,37,62,0,AR
+Mitchell Starc,4,95,0,BOWL
+M Siddharth,0,100,0,BOWL
+Padikkal,100,0,0,BAT
+Kohler-Cadmore,100,0,0,BAT
+Manav Suthar,14,85,0,BOWL
+Markram,85,14,0,BAT
+Mandeep,100,0,0,BAT
+Williamson,100,0,0,BAT
+Venkatesh Iyer,96,3,0,BAT
+Bumrah,2,97,0,BOWL
+Aniket Verma,100,0,0,BAT
+Harshal Patel,7,92,0,BOWL
+Mujeeb,0,100,0,BOWL
+Rajat Patidar,100,0,0,BAT
+Suryakumar Yadav,100,0,0,BAT
+Cummins,18,81,0,BOWL
+KS Rathore,100,0,0,BAT
+Solanki,0,100,0,BOWL
+Siraj,3,96,0,BOWL
+Yash Dayal,1,98,0,BOWL
+Topley,4,95,0,BOWL
+Tripathi,100,0,0,BAT
+Richard Gleeson,2,97,0,BOWL
+Parnell,3,96,0,BOWL
+Vijaykumar Vyshak,3,96,0,BOWL
+Daryl Mitchell,78,21,0,BAT
+Tristan Stubbs,90,9,0,BAT
+Nathan Ellis,3,96,0,BOWL
+Bhandage,100,0,0,BAT
+Joshua Little,0,100,0,BOWL
+Zampa,8,91,0,BOWL
+Shreyas Gopal,10,89,0,BOWL
+Sameer Rizvi,100,0,0,BAT
+Parag,100,0,0,BAT
+Southee,4,95,0,BOWL
+Markande,3,96,0,BOWL
+Abishek Porel,100,0,0,BAT
+Srikar Bharat,100,0,0,BAT
+Tanush Kotian,100,0,0,BAT
+Moeen Ali,46,53,0,AR
+Tim David,100,0,0,BAT
+Billings,100,0,1,WK
+Mukesh Kumar,2,97,0,BOWL
