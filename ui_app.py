@@ -578,7 +578,19 @@ def recommend_xi(team_1, team_2, match_date, model, df, roles):
     for name in selected_names:
         p_data = pool_dict[name]
         f = feature_store[name]
-        justification = f"Venue Avg Pts: {f[0]:.1f} | Season Moving Avg: {f[1]:.1f} | Player H2H Ratio: {f[2]:.2f} | Team H2H Ratio: {f[3]:.2f}"
+        justification = f"Player {name} has scored an average of {f[0]:.1f} points, in his hometown venue of {HOME_GROUND[pool_dict[name]['team']]}.\n"
+        justification += f"For that season, he has on average {f[1]:.1f} points, in moving windows.\n"
+        if f[2]>0:
+            justification += f"He seems to have a positive coefficient ({f[2]:.2f}) against his opponents, scoring more than he has let them score.  \n"
+        else:
+            justification += f"He seems to have a negative coefficient ({f[2]:.2f}) against his opponents, opponents scoring more than he himself does.  \n"
+
+        if f[3]>0:
+            justification += f"His team {pool_dict[name]['team']} reflects a positive coefficient ({f[3]:.2f}) against other teams, opposing teams are bested more than by this team.  \n"
+        else:
+            justification += f"His team {pool_dict[name]['team']} reflects a negative coefficient ({f[3]:.2f}) against other teams, and thus, is bested by opposing teams more often than not.  \n"
+        
+        # justification = f"Venue Avg Pts: {f[0]:.1f} | Season Moving Avg: {f[1]:.1f} | Player H2H Ratio: {f[2]:.2f} | Team H2H Ratio: {f[3]:.2f}"
         rows.append({
             'name': name,
             'role': p_data['role'],
@@ -936,17 +948,16 @@ with product_tab:
                 m3.metric("Team Split", " / ".join(f"{k}: {v}" for k, v in split_summary.items()))
 
                 st.dataframe(
-                    xi[['name', 'role', 'team', 'pred_points']].rename(columns={
+                    xi[['name', 'role', 'team']].rename(columns={
                         'name': 'Player', 'role': 'Role', 'team': 'Team',
-                        'pred_points': 'Expected Points'
                     }),
                     hide_index=True, use_container_width=True
                 )
 
                 st.subheader("Player Insights & Statistical Breakdown")
                 for r in xi.itertuples(index=False):
-                    with st.expander(f"{r.name} ({r.role} - {r.team}) — {r.pred_points:.1f} Expected Pts"):
-                        st.write(r.justification)
+                    with st.expander(f"{r.name} ({r.role} - {r.team})"):
+                        st.text(r.justification)
 
                 st.caption(f"Recommendation computed in {elapsed:.2f} seconds.")
 
