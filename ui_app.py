@@ -590,7 +590,6 @@ def recommend_xi(team_1, team_2, match_date, model, df, roles):
         else:
             justification += f"His team {pool_dict[name]['team']} reflects a negative coefficient ({f[3]:.2f}) against other teams, and thus, is bested by opposing teams more often than not.  \n"
         
-        # justification = f"Venue Avg Pts: {f[0]:.1f} | Season Moving Avg: {f[1]:.1f} | Player H2H Ratio: {f[2]:.2f} | Team H2H Ratio: {f[3]:.2f}"
         rows.append({
             'name': name,
             'role': p_data['role'],
@@ -674,7 +673,9 @@ def evaluate_2026_season(df_deliveries, df_cricsheet_mapped, model, roles, c=20.
             'overlap_out_of_11': overlap_count,
             'pred_xi_pts': round(actual_pts_pred_xi, 1),
             'actual_xi_pts': round(actual_pts_act_xi, 1),
-            'mae': round(mae, 2)
+            'mae': round(mae, 2),
+            'predicted_xi': ", ".join(predicted_xi),
+            'actual_xi': ", ".join(actual_xi)
         })
 
     avg_overlap = np.mean(match_overlaps) if match_overlaps else 0.0
@@ -774,7 +775,6 @@ def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, mode
     train_start_dt = pd.Timestamp(train_start) if train_start else None
     train_end_dt = pd.Timestamp(train_end) if train_end else None
     
-    # Precompute match scores and schedule lookups across full history
     match_scores_lookup, venue_dates_lookup, teams_long = build_historical_cache(df)
     
     unique_dates = sorted(df['date'].unique())
@@ -807,7 +807,6 @@ def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, mode
             _update_accumulators(m_df, m_scores, venue_player_pts, p2p_cum_pts, team_h2h_cum_pts)
             continue
             
-        # Check if match date is within selected training range
         in_range = True
         if train_start_dt and m_date < train_start_dt:
             in_range = False
@@ -818,7 +817,6 @@ def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, mode
             t1, t2 = teams[0], teams[1]
             h2h_key = tuple(sorted([t1, t2]))
             
-            # Feature 4 (Team H2H)
             t1_pts = team_h2h_cum_pts[h2h_key][t1]
             t2_pts = team_h2h_cum_pts[h2h_key][t2]
             f4_t1 = math.log((t1_pts + (25 * c_val)) / (t2_pts + (25 * c_val)))
@@ -830,7 +828,6 @@ def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, mode
                 opp_players = [op for op in players if op != p]
                 f4 = f4_t1 if p_team == t1 else -f4_t1
                 
-                # Feature 1 (Venue Avg)
                 v_home = HOME_GROUND.get(p_team)
                 v_away = HOME_GROUND.get(opp_team)
                 home_list = venue_player_pts[v_home][p] if v_home else []
@@ -840,10 +837,8 @@ def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, mode
                 avg_away = sum(away_list) / len(away_list) if away_list else 0.0
                 f1 = (avg_home + avg_away) / 2.0
                 
-                # Feature 2 (Season Moving Avg)
                 f2 = _compute_f2_fast(p, p_team, m_date, teams_long, match_scores_lookup)
                 
-                # Feature 3 (Player H2H)
                 p_vs_opp = sum(p2p_cum_pts[(p, opp)] for opp in opp_players)
                 opp_vs_p = sum(p2p_cum_pts[(opp, p)] for opp in opp_players)
                 f3 = math.log((p_vs_opp + c_val) / (opp_vs_p + c_val))
@@ -851,7 +846,6 @@ def retrain_model_pipeline(df_deliveries, train_start=None, train_end=None, mode
                 X_list.append([f1, f2, f3, f4])
                 y_list.append(m_scores[p])
             
-        # Update running state for all dates chronologically
         _update_accumulators(m_df, m_scores, venue_player_pts, p2p_cum_pts, team_h2h_cum_pts)
 
     if not X_list:
@@ -1057,8 +1051,10 @@ with model_ui_tab:
             c2.metric("Mean Absolute Error (MAE)", f"{avg_mae:.2f}")
             c3.metric("Evaluated Matches", len(eval_df))
 
+            # Display concise summary on screen while keeping full columns in eval_df for CSV export
+            display_cols = ['date', 'teams', 'overlap_out_of_11', 'pred_xi_pts', 'actual_xi_pts', 'mae']
             st.dataframe(
-                eval_df.rename(columns={
+                eval_df[display_cols].rename(columns={
                     'date': 'Date', 'teams': 'Teams',
                     'overlap_out_of_11': 'Matched Players (/11)',
                     'pred_xi_pts': 'Predicted XI Score',
