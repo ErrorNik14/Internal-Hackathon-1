@@ -43,6 +43,40 @@ HOME_GROUND = {
     'CSK': 'MA Chidambaram Stadium, Chennai'
 }
 
+# Cricsheet's info.teams field stores full franchise names, while the
+# deliveries CSVs (batting_team/bowling_team) and HOME_GROUND above use
+# short codes. Without this mapping, any feature keyed on player_team
+# (home/away venue form, team moving average, head-to-head) silently
+# resolves to nothing and defaults to 0.0 for every cricsheet-driven
+# match (i.e. the 2026 season evaluation / predictions pipeline).
+# Includes recent-rebrand aliases (RCB, PBKS) in case older Cricsheet
+# files still use the pre-rebrand names.
+TEAM_NAME_ALIASES = {
+    'Chennai Super Kings': 'CSK',
+    'Delhi Capitals': 'DC',
+    'Gujarat Titans': 'GT',
+    'Kolkata Knight Riders': 'KKR',
+    'Lucknow Super Giants': 'LSG',
+    'Mumbai Indians': 'MI',
+    'Punjab Kings': 'PBKS',
+    'Kings XI Punjab': 'PBKS',
+    'Rajasthan Royals': 'RR',
+    'Royal Challengers Bengaluru': 'RCB',
+    'Royal Challengers Bangalore': 'RCB',
+    'Sunrisers Hyderabad': 'SRH',
+}
+
+
+def normalize_team_name(name):
+    """Map a Cricsheet full team name to the short code used everywhere
+    else in this app (deliveries CSVs, HOME_GROUND). Unknown names are
+    returned unchanged rather than dropped, so a genuinely new/renamed
+    franchise fails loudly downstream (empty squad/features) instead of
+    silently - easier to spot and add to TEAM_NAME_ALIASES."""
+    if not isinstance(name, str):
+        return name
+    return TEAM_NAME_ALIASES.get(name.strip(), name.strip())
+
 XI = 11
 POOL_WINDOW = 5
 POOL_MIN = 15
@@ -89,6 +123,15 @@ def match_dreamscore(df: pd.DataFrame):
                 for f in row.fielder.split('/'):
                     catches[f.strip()] += 1
                     scores[f.strip()] += 8
+            if wt in {'runout', 'run out'} and isinstance(row.fielder, str):
+                # Run-outs can credit one fielder (direct hit) or two
+                # (thrower + collector); the "/"-joined string lists them.
+                fielders = [f.strip() for f in row.fielder.replace('(sub)', '').split('/') if f.strip()]
+                if len(fielders) == 1:
+                    scores[fielders[0]] += 12  # direct hit
+                elif len(fielders) >= 2:
+                    for f in fielders:
+                        scores[f] += 6  # assisted run out, credit split
             if isinstance(row.player_dismissed, str):
                 out.add(row.player_dismissed)
 
@@ -212,7 +255,7 @@ def load_cricsheet_data():
         return pd.DataFrame()
 
     match_list = []
-    for file_name in os.listdir(CRICSHEET_DIR):
+    for file_name in sorted(os.listdir(CRICSHEET_DIR)):  # os.listdir order is filesystem-dependent, not deterministic
         if file_name.endswith('.json'):
             file_path = CRICSHEET_DIR / file_name
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -226,13 +269,19 @@ def load_cricsheet_data():
                     team_1_name = teams[0] if len(teams) > 0 else "Unknown Team 1"
                     team_2_name = teams[1] if len(teams) > 1 else "Unknown Team 2"
 
+                    # players_dict is keyed by Cricsheet's own (full) team
+                    # names, so look up rosters BEFORE normalizing to short
+                    # codes below.
+                    team_1_players = players_dict.get(team_1_name, [])
+                    team_2_players = players_dict.get(team_2_name, [])
+
                     match_list.append({
                         "match_id": file_name.replace('.json', ''),
                         "date": dates[0],
-                        "team_1": team_1_name,
-                        "team_2": team_2_name,
-                        "team_1_players": players_dict.get(team_1_name, []),
-                        "team_2_players": players_dict.get(team_2_name, [])
+                        "team_1": normalize_team_name(team_1_name),
+                        "team_2": normalize_team_name(team_2_name),
+                        "team_1_players": team_1_players,
+                        "team_2_players": team_2_players
                     })
                 except Exception:
                     continue
@@ -241,7 +290,9 @@ def load_cricsheet_data():
     if df_c.empty:
         return df_c
     df_c['date'] = pd.to_datetime(df_c['date'])
-    df_c = df_c.sort_values('date').reset_index(drop=True)
+    # kind='mergesort' is a stable sort, and match_id is a tiebreaker, so two
+    # matches on the same date always come out in the same relative order.
+    df_c = df_c.sort_values(['date', 'match_id'], kind='mergesort').reset_index(drop=True)
     return df_c[df_c['date'] >= '2022-01-01']
 
 
@@ -249,9 +300,24 @@ def align_cricsheet_names(df_cricsheet, df_original, threshold=90):
     reference_names = set()
     for col in ['striker', 'bowler', 'fielder', 'player_dismissed']:
         if col in df_original.columns:
-            reference_names.update(df_original[col].dropna().unique())
+            for name in df_original[col].dropna().unique():
+                # The 'fielder' column encodes run-outs as "PlayerA/PlayerB"
+                # combo strings and substitute fielders as "(sub)PlayerName".
+                # Neither is a real player name, so they must never be
+                # treated as candidates in the fuzzy-matching reference set
+                # below - otherwise a clean cricsheet squad name (e.g.
+                # "Manohar") can get fuzzy-matched onto a combo string
+                # (e.g. "Abhinav Manohar/Shankar") instead of the correct
+                # single player, corrupting downstream stats lookups.
+                if '/' in name:
+                    continue
+                reference_names.add(name.replace('(sub)', '').strip())
     reference_names.discard('m')
-    reference_names_list = list(reference_names)
+    # sorted(), not list(set(...)): Python randomizes string-hash order per
+    # process, so an unsorted candidate list makes fuzzy-match tie-breaking
+    # (e.g. "Sharma" matching several real players at the same score)
+    # non-deterministic across restarts/deploys. Sorting fixes the order.
+    reference_names_list = sorted(reference_names)
 
     cricsheet_names = set()
     for player_list in df_cricsheet['team_1_players'].dropna():
@@ -262,7 +328,7 @@ def align_cricsheet_names(df_cricsheet, df_original, threshold=90):
             cricsheet_names.update(player_list)
 
     name_mapping = {}
-    for name in cricsheet_names:
+    for name in sorted(cricsheet_names):
         best_match, score = process.extractOne(name, reference_names_list)
         if score >= threshold:
             name_mapping[name] = best_match
@@ -286,7 +352,8 @@ def align_cricsheet_names(df_cricsheet, df_original, threshold=90):
 
 
 def update_roles_dictionary(roles_dict, name_mapping_dict, threshold=90):
-    target_names = list(set(name_mapping_dict.values()))
+    # sorted(), not list(set(...)) - see note in align_cricsheet_names above.
+    target_names = sorted(set(name_mapping_dict.values()))
     updated_roles = {}
     for current_name, role in roles_dict.items():
         best_match, score = process.extractOne(current_name, target_names)
@@ -708,6 +775,15 @@ def compute_match_p2p_scores(m_df):
                 dismissed = row.player_dismissed if isinstance(row.player_dismissed, str) else striker
                 for f in row.fielder.split('/'):
                     p2p[(f.strip(), dismissed)] += 8
+
+            if wt in {'runout', 'run out'} and isinstance(row.fielder, str):
+                dismissed = row.player_dismissed if isinstance(row.player_dismissed, str) else striker
+                fielders = [f.strip() for f in row.fielder.replace('(sub)', '').split('/') if f.strip()]
+                if len(fielders) == 1:
+                    p2p[(fielders[0], dismissed)] += 12  # direct hit
+                elif len(fielders) >= 2:
+                    for f in fielders:
+                        p2p[(f, dismissed)] += 6  # assisted run out, credit split
     return p2p
 
 
